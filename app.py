@@ -65,7 +65,16 @@ if inspectButton == 1:
     converted_template_img = np.array(template_img.convert('RGB'))
     converted_test_img = np.array(test_img.convert('RGB'))
 
+    st.markdown("""
+    ## Template PCB:
+    """
+    )
     st.image(converted_template_img)
+
+    st.markdown("""
+    ## Test PCB:
+    """
+    )
     st.image(converted_test_img)
 
 
@@ -126,7 +135,23 @@ if inspectButton == 1:
     # display final binary image result 
     # to show defects in the image
     
+    st.markdown("""
+    ## Areas of defects in the Test PCB:
+    """
+    )
+
     st.image(final_img)
+
+    # contour detection to get the count of defects 
+    cnts = cv2.findContours(final_img, cv2.RETR_LIST,
+                            cv2.CHAIN_APPROX_SIMPLE)[-2]          
+    blobs = []
+    for cnt in cnts:
+        if 0<cv2.contourArea(cnt)<300:
+            blobs.append(cnt)  
+
+    st.text("Number of defects in Test PCB:")
+    st.text(len(blobs))
 
 
 
