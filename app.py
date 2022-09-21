@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import cv2
 # from PIL import Image
 
 # %% STREAMLIT
@@ -47,5 +48,17 @@ uploaded_test_file = st.file_uploader("Choose a file", key=2)
 inspectButton = st.button('Inspect!')
 
 if inspectButton == 1:
+
+    img1 = cv2.imread(uploaded_template_file,cv2.IMREAD_COLOR)  #reading the images
+    img2 = cv2.imread(uploaded_test_file,cv2.IMREAD_COLOR)
+    gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)        #converting to gray scale
+    gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    ret,thresh1 = cv2.threshold(gray1,200,255,cv2.THRESH_BINARY)  #applying threshold (binary) 
+    ret,thresh2 = cv2.threshold(gray2,200,255,cv2.THRESH_BINARY)
+    res =cv2.bitwise_xor(thresh1, thresh2, mask=None)      #comparing the images     
+    cv2.imshow(res)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
     st.write("Inspecting...")
     st.stop()
