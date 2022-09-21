@@ -2,7 +2,17 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+
+import subprocess
+import sys
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package]) 
+
+install('cv2')
+
 import cv2
+
 # from PIL import Image
 
 # %% STREAMLIT
