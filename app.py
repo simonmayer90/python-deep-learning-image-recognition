@@ -13,7 +13,7 @@ install('opencv-python')
 
 import cv2
 
-# from PIL import Image
+from PIL import Image
 
 # %% STREAMLIT
 # Set configuration
@@ -45,7 +45,7 @@ st.markdown("""
 )
 
 # file uploader
-uploaded_template_file = st.file_uploader("Choose a file", key=1)
+uploaded_template_img = st.file_uploader("Choose a file", key=1)
 
 st.markdown("""
 ### Please upload the image of the test PCB!
@@ -53,22 +53,27 @@ st.markdown("""
 )
 
 # file uploader
-uploaded_test_file = st.file_uploader("Choose a file", key=2)
+uploaded_test_img = st.file_uploader("Choose a file", key=2)
 
 inspectButton = st.button('Inspect!')
 
 if inspectButton == 1:
+    template_img = Image.open(uploaded_template_img)
+    test_img = Image.open(uploaded_test_img)
 
+    converted_template_img = np.array(template_img.convert('RGB'))
+    converted_test_img = np.array(test_img.convert('RGB'))
+    
     # st.image(uploaded_template_file)
 
     # img1 = cv2.imread(uploaded_template_file,cv2.IMREAD_COLOR)  #reading the images
     # img2 = cv2.imread(uploaded_test_file,cv2.IMREAD_COLOR)
-    gray1 = cv2.cvtColor(uploaded_template_file, cv2.COLOR_BGR2GRAY)        #converting to gray scale
-    gray2 = cv2.cvtColor(uploaded_test_file, cv2.COLOR_BGR2GRAY)
+    gray1 = cv2.cvtColor(converted_template_img, cv2.COLOR_BGR2GRAY)        #converting to gray scale
+    gray2 = cv2.cvtColor(converted_test_img, cv2.COLOR_BGR2GRAY)
     ret,thresh1 = cv2.threshold(gray1,200,255,cv2.THRESH_BINARY)  #applying threshold (binary) 
     ret,thresh2 = cv2.threshold(gray2,200,255,cv2.THRESH_BINARY)
     res =cv2.bitwise_xor(thresh1, thresh2, mask=None)      #comparing the images     
-    cv2.imshow(res)
+    st.image(res)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
