@@ -39,3 +39,4 @@ inspectButton = st.button('Inspect!')
 
 if inspectButton == 1:
     st.write("Inspecting...")
+    st.stop()
