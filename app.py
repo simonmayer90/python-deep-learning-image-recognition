@@ -27,13 +27,22 @@ st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsa
 st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/raw/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg")
 
 # %% APP WORKFLOW
+
 st.markdown("""
-### Please upload the image of the printed circuit board that you want to inspect!
+### Please upload the image of the template PCB!
 """
 )
 
 # file uploader
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_template_file = st.file_uploader("Choose a file")
+
+st.markdown("""
+### Please upload the image of the test PCB!
+"""
+)
+
+# file uploader
+uploaded_test_file = st.file_uploader("Choose a file")
 
 inspectButton = st.button('Inspect!')
 
