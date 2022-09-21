@@ -9,7 +9,7 @@ import sys
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package]) 
 
-install('cv2')
+install('opencv-python')
 
 import cv2
 
