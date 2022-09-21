@@ -22,9 +22,9 @@ st.set_page_config(page_title="PCB Inspector",
 # st.image(welcome_img)
 st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsafe_allow_html=True)
 
-image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg')
+# image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg')
 
-# st.image(image)
+st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg")
 
 # %% APP WORKFLOW
 st.markdown("""
