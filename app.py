@@ -19,7 +19,7 @@ st.set_page_config(page_title="PCB Inspector",
 # st.sidebar.image("pcb_inspector_logo.png", width=300, clamp=True)
 # welcome_img = Image.open('welcome_page_img.png')
 # st.image(welcome_img)
-st.markdown("<div style='text-align: center;'>🔍 PCB Inspector 🔍</div>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsafe_allow_html=True)
 
 # %% APP WORKFLOW
 st.markdown("""
