@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from PIL import Image
+# from PIL import Image
 
 # %% STREAMLIT
 # Set configuration
@@ -24,7 +24,7 @@ st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsa
 
 # image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg')
 
-# st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg")
+st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg")
 
 # %% APP WORKFLOW
 st.markdown("""
