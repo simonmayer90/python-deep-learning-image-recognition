@@ -34,7 +34,7 @@ st.markdown("""
 )
 
 # file uploader
-uploaded_template_file = st.file_uploader("Choose a file")
+uploaded_template_file = st.file_uploader("Choose a file", key=1)
 
 st.markdown("""
 ### Please upload the image of the test PCB!
@@ -42,7 +42,7 @@ st.markdown("""
 )
 
 # file uploader
-uploaded_test_file = st.file_uploader("Choose a file")
+uploaded_test_file = st.file_uploader("Choose a file", key=2)
 
 inspectButton = st.button('Inspect!')
 
