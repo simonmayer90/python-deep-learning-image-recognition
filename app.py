@@ -24,7 +24,7 @@ st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsa
 
 # image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg')
 
-st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg")
+# st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/main/pcb-image.jpg")
 
 # %% APP WORKFLOW
 st.markdown("""
