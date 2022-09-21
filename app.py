@@ -20,7 +20,7 @@ st.set_page_config(page_title="PCB Inspector",
 # welcome_img = Image.open('welcome_page_img.png')
 # st.image(welcome_img)
 st.markdown("""
-# 🔍 Welcome to our fantastic PCB Inspector 🔍
+# 🔍 PCB Inspector 🔍
 """)
 
 # %% APP WORKFLOW
@@ -28,6 +28,10 @@ st.markdown("""
 ### How may we help you?
 """
 )
+
+# file uploader
+uploaded_file = st.file_uploader("Choose a file")
+
 # Popularity based recommender system
 genre_default, n_default = None, None
 pop_based_rec = st.checkbox("Show me the all time favourites",
