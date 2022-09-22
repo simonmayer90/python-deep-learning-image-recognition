@@ -77,7 +77,6 @@ if inspectButton == 1:
     )
     st.image(converted_test_img)
 
-
     # gray1 = cv2.cvtColor(converted_template_img, cv2.COLOR_BGR2GRAY)        #converting to gray scale
     # gray2 = cv2.cvtColor(converted_test_img, cv2.COLOR_BGR2GRAY)
     # ret,thresh1 = cv2.threshold(gray1,200,255,cv2.THRESH_BINARY)  #applying threshold (binary) 
@@ -87,10 +86,13 @@ if inspectButton == 1:
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    rgb_template_img = cv2.imread('original.jpg')  
+    cv2.imwrite("template.jpg", converted_template_img)
+    cv2.imwrite("test.jpg", converted_test_img)
+
+    rgb_template_img = cv2.imread('template.jpg')  
 
     # read template PCB 01 image as grayscale image
-    template_img = cv2.imread('original.jpg', 0)  
+    template_img = cv2.imread('template.jpg', 0)  
     # the 2nd parameter is flag, makes image grayscale for value 0 or 2
 
     # resize template image of PCB
@@ -109,10 +111,10 @@ if inspectButton == 1:
 
 
     # read test image of PCB 01
-    rgb_test_img = cv2.imread('defect.jpg')  
+    rgb_test_img = cv2.imread('test.jpg')  
 
     # read grayscale test PCB image
-    test_img = cv2.imread('defect.jpg', 0)
+    test_img = cv2.imread('test.jpg', 0)
 
     # resize test image of PCB
     test_img_resize = cv2.resize(test_img, (750, 450))
