@@ -84,7 +84,8 @@ if inspectButton == 1:
     # the 2nd parameter is flag, makes image grayscale for value 0 or 2
 
     # resize template image of PCB
-    template_img_resize = cv2.resize(template_img, (750, 450))
+    newimgheight = template_img.shape[0]*(750/template_img.shape[1])
+    template_img_resize = cv2.resize(template_img, (750, int(newimgheight)))
 
     # Gaussian blur to blur the image before thresholding
     blur_template_img = cv2.GaussianBlur(template_img_resize, (3,3),0)
@@ -105,7 +106,9 @@ if inspectButton == 1:
     test_img = cv2.imread('test.jpg', 0)
 
     # resize test image of PCB
-    test_img_resize = cv2.resize(test_img, (750, 450))
+    width = template_img_resize.shape[1]
+    height = template_img_resize.shape[0]
+    test_img_resize = cv2.resize(test_img, (width, height))
 
     # Gaussian blur to blur the image before thresholding
     blur_test_img = cv2.GaussianBlur(test_img_resize, (3,3),0)
