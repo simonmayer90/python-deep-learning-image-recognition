@@ -36,12 +36,12 @@ st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsa
 
 # image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg')
 
-st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/raw/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg")
+# st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/raw/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg")
 
 # %% APP WORKFLOW
 
 st.markdown("""
-### Please upload the image of the template PCB!
+### Please upload the image of the template PCB:
 """
 )
 
@@ -49,7 +49,7 @@ st.markdown("""
 uploaded_template_img = st.file_uploader("Choose a file", key=1)
 
 st.markdown("""
-### Please upload the image of the test PCB!
+### Please upload the image of the test PCB:
 """
 )
 
