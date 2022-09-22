@@ -149,7 +149,7 @@ if inspectButton == 1:
     ## Areas of defects in the Test PCB:
     """
     )
-
+    st.image(sub_img)
     st.image(final_img)
 
     # contour detection to get the count of defects 
