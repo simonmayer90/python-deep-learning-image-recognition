@@ -65,18 +65,6 @@ if inspectButton == 1:
     converted_template_img = np.array(template_img.convert('RGB'))
     converted_test_img = np.array(test_img.convert('RGB'))
 
-    st.markdown("""
-    ## Template PCB:
-    """
-    )
-    st.image(converted_template_img)
-
-    st.markdown("""
-    ## Test PCB:
-    """
-    )
-    st.image(converted_test_img)
-
     # gray1 = cv2.cvtColor(converted_template_img, cv2.COLOR_BGR2GRAY)        #converting to gray scale
     # gray2 = cv2.cvtColor(converted_test_img, cv2.COLOR_BGR2GRAY)
     # ret,thresh1 = cv2.threshold(gray1,200,255,cv2.THRESH_BINARY)  #applying threshold (binary) 
@@ -133,6 +121,23 @@ if inspectButton == 1:
 
     # Median blur to eliminate background noise
     final_img = cv2.medianBlur(sub_img, 5)
+
+
+    st.markdown("""
+    ## Template PCB:
+    """
+    )
+    st.image(converted_template_img)
+    st.image(blur_template_img)
+    st.image(template_adap_thresh)
+
+    st.markdown("""
+    ## Test PCB:
+    """
+    )
+    st.image(converted_test_img)
+    st.image(blur_test_img)
+    st.image(test_adap_thresh)
 
     # display final binary image result 
     # to show defects in the image
