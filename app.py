@@ -13,39 +13,26 @@ def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package]) 
 
 install('opencv-python')
+install('imutils')
 
 import cv2
+import imutils
 
-# %% STREAMLIT
-# Set configuration
 st.set_page_config(page_title="PCB Inspector",
                    page_icon="🔍",
-                   initial_sidebar_state="expanded",
+                   # initial_sidebar_state="expanded",
                    # layout="wide"
                    )
 
-# set colors: These has to be set on the setting menu online
-    # primary color: #FF4B4B, background color:#0E1117
-    # text color: #FAFAFA, secindary background color: #E50914
-
-# Set the logo of app
-# st.sidebar.image("pcb_inspector_logo.png", width=300, clamp=True)
-# welcome_img = Image.open('welcome_page_img.png')
-# st.image(welcome_img)
 st.markdown("<h1 style='text-align: center;'>🔍 PCB Inspector 🔍</h1>", unsafe_allow_html=True)
 
-# image = Image.open('https://github.com/simonmayer90/python-deep-learning-image-recognition/blob/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg')
-
 # st.image("https://github.com/simonmayer90/python-deep-learning-image-recognition/raw/4d89104da41a027d2d6730f70761eb7e23e37fe1/pcb-image.jpg")
-
-# %% APP WORKFLOW
 
 st.markdown("""
 ### Please upload the image of the template PCB:
 """
 )
 
-# file uploader
 uploaded_template_img = st.file_uploader("Choose a file", key=1)
 
 st.markdown("""
@@ -53,7 +40,6 @@ st.markdown("""
 """
 )
 
-# file uploader
 uploaded_test_img = st.file_uploader("Choose a file", key=2)
 
 inspectButton = st.button('Inspect!')
@@ -72,74 +58,168 @@ if inspectButton == 1:
     rgb_test_img = cv2.imread('test.jpg')  
 
     # read images as grayscale
-    template_img = cv2.imread('template.jpg', 0)
-    test_img = cv2.imread('test.jpg', 0)
-    # the 2nd parameter is flag, makes image grayscale for value 0 or 2
+    gray_template_img = cv2.cvtColor(rgb_template_img, cv2.COLOR_BGR2GRAY)
+    gray_test_img = cv2.cvtColor(rgb_test_img, cv2.COLOR_BGR2GRAY)
 
-    # resize images
-    width = test_img.shape[1]
-    height = test_img.shape[0]
+    # Rotation
 
-    template_img_resize = cv2.resize(template_img, (width, height))
-    test_img_resize = test_img
+    MAX_FEATURES = 500
+    GOOD_MATCH_PERCENT = 0.2
+
+    # Detect ORB features and compute descriptors.
+    orb = cv2.ORB_create(MAX_FEATURES)
+    keypoints1, descriptors1 = orb.detectAndCompute(gray_test_img, None)
+    keypoints2, descriptors2 = orb.detectAndCompute(gray_template_img, None)
+
+    # Match features. Matcher takes normType, which is set to cv2.NORM_L2 for SIFT and SURF, cv2.NORM_HAMMING for ORB, FAST and BRIEF
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(descriptors1, descriptors2)
+
+    # sort matches
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    # Remove not so good matches
+    numGoodMatches = int(len(matches) * GOOD_MATCH_PERCENT)
+    matches = matches[:numGoodMatches]
+
+    # Draw top matches
+    imMatches = cv2.drawMatches(rgb_test_img, keypoints1, rgb_template_img, keypoints2, matches, None)
+
+    # Extract location of good matches
+    points1 = np.zeros((len(matches), 2), dtype=np.float32)
+    points2 = np.zeros((len(matches), 2), dtype=np.float32)
+
+    for i, match in enumerate(matches):
+        points1[i, :] = keypoints1[match.queryIdx].pt
+        points2[i, :] = keypoints2[match.trainIdx].pt
+
+    # Find homography
+    h, mask = cv2.findHomography(points1, points2, cv2.LMEDS)
+
+    # Use homography
+    height, width, channels = rgb_template_img.shape
+    rgb_test_img_transf = cv2.warpPerspective(rgb_test_img, h, (width, height))
+
+    # cut border
+    width = rgb_template_img.shape[1]
+    height = rgb_template_img.shape[0]
+
+    rgb_template_img = rgb_template_img[10:height-10, 10:width-10]
+    rgb_test_img_transf = rgb_test_img_transf[10:height-10, 10:width-10]
+
+    rgb_test_img_transf_show = rgb_test_img_transf.copy()
+
+    # read images as grayscale
+    gray_template_img = cv2.cvtColor(rgb_template_img, cv2.COLOR_BGR2GRAY)
+    gray_test_img_transf = cv2.cvtColor(rgb_test_img_transf, cv2.COLOR_BGR2GRAY)
 
     # Gaussian blur to blur the image before thresholding
-    blur_template_img = cv2.GaussianBlur(template_img_resize, (3,3),0)
-    blur_test_img = cv2.GaussianBlur(test_img_resize, (3,3),0)
-
+    blur_template_img = cv2.GaussianBlur(gray_template_img, (3,3),0)
+    blur_test_img = cv2.GaussianBlur(gray_test_img_transf, (3,3),0)
 
     # Adaptive thresholding(mean)
     # Thresholding is used to turn a grayscale image into a binary image based on a 
     # specific threshold value
     template_adap_thresh = cv2.adaptiveThreshold(blur_template_img, 255, 
-                                            cv2. ADAPTIVE_THRESH_MEAN_C,
-                                            cv2.THRESH_BINARY, 15, 5)
+                                            cv2.ADAPTIVE_THRESH_MEAN_C,
+                                            cv2.THRESH_BINARY, 11, 2)
 
     test_adap_thresh = cv2.adaptiveThreshold(blur_test_img, 255, 
-                                            cv2. ADAPTIVE_THRESH_MEAN_C,
-                                            cv2.THRESH_BINARY, 15, 5)
+                                            cv2.ADAPTIVE_THRESH_MEAN_C,
+                                            cv2.THRESH_BINARY, 11, 2)
 
     # Image subtraction (template - test)
     sub_img= cv2.subtract(template_adap_thresh, test_adap_thresh)
 
     # Median blur to eliminate background noise
-    final_img = cv2.medianBlur(sub_img, 5)
+    blur_img = cv2.medianBlur(sub_img, 7)
+    
+    # diff = cv2.absdiff(template_adap_thresh, test_adap_thresh)
+
+    # diff = cv2.absdiff(template_img_resize, test_img)
+
+    # thresh = cv2.threshold(final_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
+    kernel = np.ones((5,5), np.uint8)
+    dilate_img = cv2.dilate(blur_img, kernel, iterations=10)
+    
+    contours = cv2.findContours(dilate_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
+
+    for contour in contours:
+        if cv2.contourArea(contour) > 100:
+            x, y, w, h = cv2.boundingRect(contour)
+            cv2.rectangle(rgb_template_img, (x,y), (x+w, y+h), (255,0,0), 2)
+            cv2.rectangle(rgb_test_img_transf, (x,y), (x+w, y+h), (255,0,0), 2)
+
+    # x = np.zeros((360, 10, 3), np.uint8)
+    # result = np.hstack((rgb_template_img, x, rgb_test_img))
 
     st.markdown("""
     ## Template PCB:
     """
     )
+    
     st.image(converted_template_img)
-    st.image(blur_template_img)
-    st.image(template_adap_thresh)
 
     st.markdown("""
     ## Test PCB:
     """
     )
+
     st.image(converted_test_img)
+
+    st.markdown("""
+    ## Matches between Template and Test PCB:
+    """
+    )
+
+    st.image(imMatches)
+
+    st.markdown("""
+    ## Transformed Template PCB:
+    """
+    )
+
+    st.image(blur_template_img)
+    st.image(template_adap_thresh)
+
+
+    st.markdown("""
+    ## Transformed Test PCB:
+    """
+    )
+
+    st.image(rgb_test_img_transf_show)
     st.image(blur_test_img)
     st.image(test_adap_thresh)
 
-    # display final binary image result 
-    # to show defects in the image
-    
     st.markdown("""
-    ## Areas of defects in the Test PCB:
+    ## Substraction of Images:
     """
     )
+
     st.image(sub_img)
-    st.image(final_img)
+    st.image(blur_img)
+    st.image(dilate_img)
+    
+    st.markdown("""
+    ## Areas of defects:
+    """
+    )
+
+    st.image(rgb_template_img)
+    st.image(rgb_test_img_transf)
 
     # contour detection to get the count of defects 
-    cnts = cv2.findContours(final_img, cv2.RETR_LIST,
+    cnts = cv2.findContours(dilate_img, cv2.RETR_LIST,
                             cv2.CHAIN_APPROX_SIMPLE)[-2]          
     blobs = []
     for cnt in cnts:
-        if 0<cv2.contourArea(cnt)<300:
+        if 0<cv2.contourArea(cnt)<100000:
             blobs.append(cnt)  
 
-    st.text("Number of defects in Test:")
+    st.text("Number of defects in Test PCB:")
     st.text(len(blobs))
 
 
