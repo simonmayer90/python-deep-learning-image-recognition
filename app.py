@@ -9,14 +9,14 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing import image
 
-import subprocess
-import sys
+# import subprocess
+# import sys
 
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package]) 
+# def install(package):
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", package]) 
 
-install('opencv-python')
-install('imutils')
+# install('opencv-python')
+# install('imutils')
 
 import cv2
 import imutils
