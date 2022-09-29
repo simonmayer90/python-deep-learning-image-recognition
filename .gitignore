@@ -5,4 +5,4 @@ cut_defects.py
 template.jpg
 test.jpg
 defects/
-cnn_model.h5
+crop_defect.jpg

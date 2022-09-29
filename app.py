@@ -5,6 +5,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import image
 from PIL import Image
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.preprocessing import image
 
 import subprocess
 import sys
@@ -43,6 +46,9 @@ st.markdown("""
 uploaded_test_img = st.file_uploader("Choose a file", key=2)
 
 inspectButton = st.button('Inspect!')
+
+cnn = keras.models.load_model("cnn_model2.h5", compile=False)
+
 
 if inspectButton == 1:
     template_img = Image.open(uploaded_template_img)
@@ -140,6 +146,7 @@ if inspectButton == 1:
 
     # thresh = cv2.threshold(final_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
+    # dilation to make defected areas bigger
     kernel = np.ones((5,5), np.uint8)
     dilate_img = cv2.dilate(blur_img, kernel, iterations=10)
     
@@ -149,8 +156,34 @@ if inspectButton == 1:
     for contour in contours:
         if cv2.contourArea(contour) > 100:
             x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(rgb_template_img, (x,y), (x+w, y+h), (255,0,0), 2)
-            cv2.rectangle(rgb_test_img_transf, (x,y), (x+w, y+h), (255,0,0), 2)
+            cv2.rectangle(rgb_template_img, (x,y), (x+w, y+h), (255,0,0), 3)
+            cv2.rectangle(rgb_test_img_transf, (x,y), (x+w, y+h), (255,0,0), 3)
+
+            crop_defect = rgb_test_img_transf[y:y+h, x:x+w]    
+            cv2.imwrite("crop_defect.jpg", crop_defect)
+
+            test_image = image.load_img("crop_defect.jpg", target_size = (64, 64))
+            test_image = image.img_to_array(test_image)
+            test_image = np.expand_dims(test_image, axis = 0)
+            result = cnn.predict(test_image)
+
+            if np.argmax(result) == 0:
+                prediction = 'Missing_hole'
+            elif np.argmax(result) == 1:
+                prediction = 'Mouse_bite'
+            elif np.argmax(result) == 2:
+                prediction = 'Open_circuit'
+            elif np.argmax(result) == 3:
+                prediction = 'Short'
+            elif np.argmax(result) == 4:
+                prediction = 'Spur'
+            elif np.argmax(result) == 5:
+                prediction = 'Spurious_copper'
+            else:
+                prediction = 'Unknown_defect'
+
+            cv2.putText(rgb_test_img_transf, prediction, (x-5, y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 3)
+
 
     # x = np.zeros((360, 10, 3), np.uint8)
     # result = np.hstack((rgb_template_img, x, rgb_test_img))
