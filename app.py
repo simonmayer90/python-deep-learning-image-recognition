@@ -148,7 +148,7 @@ if inspectButton == 1:
 
     # dilation to make defected areas bigger
     kernel = np.ones((5,5), np.uint8)
-    dilate_img = cv2.dilate(blur_img, kernel, iterations=10)
+    dilate_img = cv2.dilate(blur_img, kernel, iterations=14)
     
     contours = cv2.findContours(dilate_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours = imutils.grab_contours(contours)
