@@ -182,7 +182,7 @@ if inspectButton == 1:
             else:
                 prediction = 'Unknown_defect'
 
-            cv2.putText(rgb_test_img_transf, prediction, (x-5, y-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 3)
+            cv2.putText(rgb_test_img_transf, prediction, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 3)
 
 
     # x = np.zeros((360, 10, 3), np.uint8)
