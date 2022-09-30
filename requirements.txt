@@ -2,3 +2,4 @@ numpy
 opencv-python-headless
 matplotlib
 tensorflow
+imutils
