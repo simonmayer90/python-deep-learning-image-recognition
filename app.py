@@ -140,7 +140,7 @@ if inspectButton == 1:
     sub_img= cv2.subtract(template_adap_thresh, test_adap_thresh)
 
     # Median blur to eliminate background noise
-    blur_img = cv2.medianBlur(sub_img, 7)
+    blur_img = cv2.medianBlur(sub_img, 9)
     
     # diff = cv2.absdiff(template_adap_thresh, test_adap_thresh)
 
