@@ -45,6 +45,8 @@ st.markdown("""
 
 uploaded_test_img = st.file_uploader("Choose a file", key=2)
 
+transformNeeded = st.checkbox('The test PCB is rotated / has another image size.')
+
 inspectButton = st.button('Inspect!')
 
 cnn = keras.models.load_model("cnn_model2.h5", compile=False)
