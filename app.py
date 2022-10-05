@@ -184,67 +184,67 @@ if inspectButton == 1:
             else:
                 prediction = 'Unknown_defect'
 
-            # cv2.putText(rgb_test_img_transf, prediction, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,0,0), 3)
+            cv2.putText(rgb_test_img_transf, prediction, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,0,0), 3)
 
 
     # x = np.zeros((360, 10, 3), np.uint8)
     # result = np.hstack((rgb_template_img, x, rgb_test_img))
 
-    st.markdown("""
-    ## Template PCB:
-    """
-    )
+    # st.markdown("""
+    # ## Template PCB:
+    # """
+    # )
     
-    st.image(converted_template_img)
+    # st.image(converted_template_img)
 
-    st.markdown("""
-    ## Test PCB:
-    """
-    )
+    # st.markdown("""
+    # ## Test PCB:
+    # """
+    # )
 
-    st.image(converted_test_img)
+    # st.image(converted_test_img)
 
-    st.markdown("""
-    ## Matches between Template and Test PCB:
-    """
-    )
+    # st.markdown("""
+    # ## Matches between Template and Test PCB:
+    # """
+    # )
 
-    st.image(imMatches)
+    # st.image(imMatches)
 
-    st.markdown("""
-    ## Transformed Template PCB:
-    """
-    )
+    # st.markdown("""
+    # ## Transformed Template PCB:
+    # """
+    # )
 
-    st.image(blur_template_img)
-    st.image(template_adap_thresh)
+    # st.image(blur_template_img)
+    # st.image(template_adap_thresh)
 
 
-    st.markdown("""
-    ## Transformed Test PCB:
-    """
-    )
+    # st.markdown("""
+    # ## Transformed Test PCB:
+    # """
+    # )
 
-    st.image(rgb_test_img_transf_show)
-    st.image(blur_test_img)
-    st.image(test_adap_thresh)
+    # st.image(rgb_test_img_transf_show)
+    # st.image(blur_test_img)
+    # st.image(test_adap_thresh)
 
-    st.markdown("""
-    ## Substraction of Images:
-    """
-    )
+    # st.markdown("""
+    # ## Substraction of Images:
+    # """
+    # )
 
-    st.image(sub_img)
-    st.image(blur_img)
-    st.image(dilate_img)
+    # st.image(sub_img)
+    # st.image(blur_img)
+    # st.image(dilate_img)
     
-    st.markdown("""
-    ## Areas of defects:
-    """
-    )
+    # st.markdown("""
+    # ## Areas of defects:
+    # """
+    # )
 
-    st.image(rgb_template_img)
-    st.image(rgb_test_img_transf)
+    # st.image(rgb_template_img)
+
 
     # contour detection to get the count of defects 
     cnts = cv2.findContours(dilate_img, cv2.RETR_LIST,
@@ -254,8 +254,28 @@ if inspectButton == 1:
         if 0<cv2.contourArea(cnt)<100000:
             blobs.append(cnt)  
 
-    st.text("Number of defects in Test PCB:")
-    st.text(len(blobs))
+    if blobs == []:
+        st.markdown("""
+        ## Congratulations! There are no defects in your PCB.
+        """
+        )
 
+    else:
+
+        html_str = f"""
+        <style>
+        p.a {{
+        font: bold 14px Courier;
+        }}
+        </style>
+        <p class="a">There are {len(blobs)} defects in your PCB:</p>
+        """
+
+        st.markdown(html_str, unsafe_allow_html=True)
+        
+    # st.text("Number of defects in Test PCB:")
+    # st.text(len(blobs))
+
+    st.image(rgb_test_img_transf)
 
 
