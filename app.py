@@ -263,12 +263,7 @@ if inspectButton == 1:
     else:
 
         html_str = f"""
-        <style>
-        p.a {{
-        font: bold 14px Courier;
-        }}
-        </style>
-        <p class="a">There are {len(blobs)} defects in your PCB:</p>
+        <h3>There are {len(blobs)} defects in your PCB:</h3>
         """
 
         st.markdown(html_str, unsafe_allow_html=True)
